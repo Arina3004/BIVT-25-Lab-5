@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Globalization;
+using System.Linq;
 using System.Linq;
 
 namespace Lab5
@@ -12,7 +13,7 @@ namespace Lab5
             // code here
             double s = 0;
             int count = 0;
-            if (matrix == nunll)
+            if (matrix == null)
             {
                 return 0;
             }
@@ -37,9 +38,23 @@ namespace Lab5
         }
         public (int row, int col) Task2(int[,] matrix)
         {
+            int row = -1, col = -1;
 
             // code here
-
+            int minM = int.MaxValue;
+            for (int i = 0; i < matrix.GetLength(0); i++)
+            {
+                for (int j = 0; j < matrix.GetLength(1); j++)
+                {
+                    if (matrix[i, j] < minM)
+                    {
+                        minM = matrix[i, j];
+                        row = i;
+                        col = j;
+                    }
+                
+                }
+            }
             // end
 
             return (row, col);
@@ -50,7 +65,7 @@ namespace Lab5
             // code here
             int i1 = matrix.GetLength(0);
             int j1 = matrix.GetLength(1);
-            if (ij == 0 || k < 0 || k >= j1)
+            if (i1 == 0 || k < 0 || k >= j1)
             {
                 return;
             }
@@ -77,59 +92,85 @@ namespace Lab5
         }
         public int[,] Task4(int[,] matrix)
         {
-            int[,] answer = null;
 
             // code here
-            //если 1 строка
-            int row = matrix.GetLength(0);
-            int col = matrix.GetLength(1);
-            if (row <= 1)
-            {
-                int[,] pustMatrix = new int[0, col];
-                matrix = pustMatrix;
-                return pustMatrix;
-            }
-            //найти индекс строки с мин эл в 1 столбце
-            int minValue = matrix[0, 0];
-            int minindex = 0;
-            for (int i = 1; i < row; i++)
-            {
-                if (matrix[i, 0] < minValue)
-                {
-                    minValue = matrix[i, 0];
-                    minindex = i;
-                }
+    // Максимальная защита - проверяем все возможные проблемные случаи
+    if (matrix == null)
+    {
+        return new int[0, 0];
+    }
+    
+    int row = matrix.GetLength(0); 
+    
+    // Если нет строк - возвращаем пустую матрицу
+    if (row == 0)
+    {
+        return new int[0, 0];
+    }
+    
+    int col = matrix.GetLength(1);
+    
+    // Если нет столбцов - возвращаем пустую матрицу с 0 столбцов
+    if (col == 0)
+    {
+        return new int[0, 0];
+    }
+    
+    // Если только одна строка - возвращаем пустую матрицу с тем же количеством столбцов
+    if (row == 1)
+    {
+        return new int[0, col];
+    }
+    
+    // Теперь безопасно ищем минимальный элемент в первом столбце
+    int minValue = matrix[0, 0]; 
+    int minindex = 0; 
+    
+    for (int i = 1; i < row; i++) 
+    { 
+        if (matrix[i, 0] < minValue) 
+        { 
+            minValue = matrix[i, 0]; 
+            minindex = i; 
+        } 
+    } 
+    
+    // Создаем новую матрицу без найденной строки
+    int[,] answer = new int[row - 1, col];  
+    int newrow = 0; 
+    
+    for (int i = 0; i < row; i++) 
+    { 
+        if (i != minindex) 
+        { 
+            for (int j = 0; j < col; j++) 
+            { 
+                answer[newrow, j] = matrix[i, j]; 
             } 
-            //новая матрица 
-            answer = new int[row - 1, col]; 
-            int newrow = 0;
-            for (int i = 0; i < row; i++)
-            {
-                if ( i != minindex)
-                {
-                    for (int j = 0; j < col; j++)
-                    {
-                        answer[newrow, j] = matrix[i, j];
-                    }
-                    newrow++;
-                }
-            }
-            // end
+            newrow++; 
+        } 
+    } 
+    
+    return answer; 
 
-            return answer;
         }
         public int Task5(int[,] matrix)
         {
-            int sum = 0, s1 = 0, s2 = 0;
+            
 
             // code here
-            for (int i = 0; i < n; i++)
+            if (matrix == null)
             {
-                s1 += a[i, i];
-                s2 += a[i, n - i - 1];
+                return 0;
             }
-            sum = s1 + s2;
-
+            int sum = 0; 
+            if (matrix == null) return 0; 
+            int n = matrix.GetLength(0); 
+            if (n != matrix.GetLength(1)) return 0; 
+            for (int i = 0; i < n; i++) 
+            {
+                sum += matrix[i, i]; 
+            }
             // end
 
             return sum;
@@ -142,7 +183,7 @@ namespace Lab5
             int col = matrix.GetLength(1);
             for (int i = 0; i < row; i++)
             {
-                int maxval = int.MinValue;
+                int maxvaul = int.MinValue;
                 int maxindex = -1;
                 int max1= -1;
                 int max2 = -1;
@@ -165,7 +206,7 @@ namespace Lab5
                 }
                 if (max1 != -1 && max2 != -1 && maxindex != -1 && maxindex < max1)
                 {
-                    (matrixx[i, maxindex], matrix[i, max2]) = (matrix[i, max2],matrixx[i, maxindex]);
+                    (matrix[i, maxindex], matrix[i, max2]) = (matrix[i, max2],matrix[i, maxindex]);
                 }
             }
 
@@ -177,9 +218,18 @@ namespace Lab5
             int[] negatives = null;
 
             // code here
+            if (matrix == null)
+            {
+                return null;
+            }
             //считаем колво отриц эл
             int row = matrix.GetLength(0);
             int col = matrix.GetLength(1);
+            if (row == 0 || col == 0)
+            {
+                return null;
+            }
+            int count = 0;
             for (int i = 0; i < row; i++)
             {
                 for (int j = 0; j < col; j++)
@@ -193,7 +243,7 @@ namespace Lab5
             //если отриц нет возвращаем пустой массив
             if (count == 0)
             {
-                return new int[0];
+                return null;
             }
             //создаем новый массив
             negatives = new int[count];
@@ -204,7 +254,8 @@ namespace Lab5
                 {
                     if (matrix[i, j] < 0)
                     {
-                        negatives[index++] = matrix[i, j];
+                        negatives[index] = matrix[i, j];
+                        index++;
                     }
                 }       
             }
@@ -281,8 +332,16 @@ namespace Lab5
         {
 
             // code here
+            if (matrix == null)
+            {
+                return;
+            }
             int n = matrix.GetLength(0);
-            for (int i = 0; i < n; i++)
+            if (n != matrix.GetLength(1))
+            {
+                return;
+            }
+            for (int i = n/2; i < n; i++)
             {
                 for (int j = 0; j <= i; j++)
                 {
@@ -297,9 +356,13 @@ namespace Lab5
             int[,] answer = null;
 
             // code here
+            if (matrix == null)
+            {
+                return null;
+            }
             int row = matrix.GetLength(0);
             int col = matrix.GetLength(1);
-            int cont0 = 0;
+            int count0 = 0;
             //колво строк бкз нулей
             for (int i = 0; i < row; i++)
             {
@@ -336,19 +399,20 @@ namespace Lab5
                 return newmatrix;
             }
             //создать новую матрицу  и заполнить её
-            int[,] answer = new int[row, col];
+            answer = new int[count0, col];
             int indexi = 0;
             for (int i = 0; i < row; i++)
             {
+                bool zero2 = false;
                 for (int j = 0; j < col; j++)
                 {
                     if (matrix[i, j] == 0)
                     {
-                        zero = thrue;
-                        bteak;
+                        zero2 = true;
+                        break;
                     }
                 }
-                if (zero == false)
+                if (zero2 == false)
                 {
                     for (int j = 0; j < col; j++)
                     {
